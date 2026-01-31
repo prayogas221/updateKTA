@@ -3,33 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KTA HMI Mimika - Elite Edition</title>
+<title>KTA HMI Mimika - Elite Stable</title>
 
-<script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 body{
   font-family:'Poppins',sans-serif;
   background:#f1f1f1;
-  padding:0.5rem;
+  padding:1rem;
 }
 
-/* ================= KTA CARD ================= */
+.hidden{display:none;}
+
+#login-form{
+  max-width:320px;
+  margin:4rem auto;
+  padding:2rem;
+  background:white;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+#login-form input{
+  width:100%;
+  padding:10px;
+  margin-bottom:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+}
+
+#login-form button{
+  width:100%;
+  padding:10px;
+  background:#2d5016;
+  color:white;
+  border:none;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+#kta-container{
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+  justify-content:center;
+}
+
+/* ================= CARD ================= */
 
 .kta-card{
-  width:100%;
-  max-width:340px;
+  width:340px;
   height:5.4cm;
-  border-radius:12px;
+  border-radius:14px;
   position:relative;
   overflow:hidden;
-  box-shadow:0 8px 20px rgba(0,0,0,0.2);
-  color:#111;
   background:white;
+  box-shadow:0 12px 25px rgba(0,0,0,0.25);
 }
 
 /* PANEL KIRI */
@@ -40,7 +74,7 @@ body{
   top:0;
   width:55px;
   height:100%;
-  background:linear-gradient(180deg,#0f3d1c,#2d5016,#000000);
+  background:linear-gradient(180deg,#0f3d1c,#2d5016,#000);
 }
 
 /* PANEL KANAN */
@@ -49,15 +83,15 @@ body{
   position:absolute;
   right:0;
   top:0;
-  width:40px;
+  width:45px;
   height:100%;
-  background:linear-gradient(180deg,#000000,#2d5016,#0f3d1c);
+  background:linear-gradient(180deg,#000,#2d5016,#0f3d1c);
 }
 
 /* WATERMARK */
 .kta-watermark{
   position:absolute;
-  width:160px;
+  width:170px;
   opacity:0.05;
   top:50%;
   left:50%;
@@ -73,13 +107,12 @@ body{
   position:absolute;
   top:70px;
   left:70px;
-  box-shadow:inset 0 0 4px rgba(0,0,0,0.4);
 }
 
 /* HEADER */
 .kta-header{
   text-align:center;
-  padding-top:8px;
+  padding-top:10px;
   position:relative;
   z-index:2;
 }
@@ -92,12 +125,10 @@ body{
 .kta-title{
   font-size:11px;
   font-weight:700;
-  margin-top:2px;
 }
 
 .kta-subtitle{
   font-size:9px;
-  margin-top:2px;
 }
 
 .kta-divider{
@@ -110,15 +141,15 @@ body{
 /* CONTENT */
 .kta-content{
   display:flex;
-  gap:6px;
-  padding:0 12px;
+  gap:8px;
+  padding:0 15px;
   position:relative;
   z-index:2;
 }
 
 .kta-left img{
-  width:55px;
-  height:70px;
+  width:60px;
+  height:75px;
   object-fit:cover;
   border-radius:6px;
   border:2px solid #2d5016;
@@ -127,13 +158,6 @@ body{
 .kta-right{
   flex:1;
   font-size:8px;
-}
-
-.kta-number{
-  letter-spacing:2px;
-  font-size:9px;
-  font-weight:600;
-  margin-bottom:2px;
 }
 
 .kta-right h2{
@@ -146,7 +170,12 @@ body{
   margin:1px 0;
 }
 
-/* BOTTOM */
+.kta-number{
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:1px;
+}
+
 .kta-bottom{
   display:flex;
   justify-content:space-between;
@@ -162,54 +191,7 @@ body{
   font-size:7px;
   font-weight:600;
   color:#2d5016;
-}
-
-/* EXECUTIVE MODE */
-.executive{
-  border:2px solid gold;
-}
-
-.executive .kta-card::before,
-.executive .kta-card::after{
-  background:linear-gradient(180deg,#000,#333,gold);
-}
-
-/* ================= LOGIN ================= */
-
-.hidden{display:none;}
-
-#login-form{
-  max-width:320px;
-  margin:3rem auto;
-  background:white;
-  padding:1.5rem;
-  border-radius:8px;
-  box-shadow:0 4px 15px rgba(0,0,0,0.2);
-}
-
-#login-form input{
-  width:100%;
-  padding:8px;
-  margin-bottom:10px;
-  border:1px solid #ccc;
-  border-radius:6px;
-}
-
-#login-form button{
-  width:100%;
-  padding:8px;
-  background:#2d5016;
-  color:white;
-  border:none;
-  border-radius:6px;
-  font-weight:600;
-}
-
-#kta-container{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  justify-content:center;
+  margin-top:2px;
 }
 
 </style>
@@ -217,55 +199,68 @@ body{
 <body>
 
 <div id="login-form">
-<h2>Login</h2>
-<input type="text" id="username" placeholder="Username">
-<input type="password" id="password" placeholder="Password">
-<button onclick="login()">Login</button>
-<p id="login-error" class="hidden" style="color:red;">Login gagal</p>
+  <h2 style="text-align:center;">Login Cabang</h2>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <p id="login-error" class="hidden" style="color:red;text-align:center;">Login gagal</p>
 </div>
 
 <div id="kta-page" class="hidden">
-<div id="kta-container"></div>
+  <div id="kta-container"></div>
 </div>
 
 <script>
 
-const users={
-  "Cabang Mimika":{password:"cabang123"}
+const users = {
+  "cabang mimika": { password: "cabang123" }
 };
 
-const csvUrl='https://docs.google.com/spreadsheets/d/e/2PACX-1vRkxnLr5GK_w_WRktgY-SZZ2pjBHlDVSphEYLLSBLntg0IyQB3Z5178wjaES8-yMQV7ZcMTGym-VoZA/pub?gid=0&single=true&output=csv';
-const logo='https://upload.wikimedia.org/wikipedia/commons/6/67/Lambang_HMI_%28Original%29.png';
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkxnLr5GK_w_WRktgY-SZZ2pjBHlDVSphEYLLSBLntg0IyQB3Z5178wjaES8-yMQV7ZcMTGym-VoZA/pub?gid=0&single=true&output=csv";
+const logo = "https://upload.wikimedia.org/wikipedia/commons/6/67/Lambang_HMI_%28Original%29.png";
 
-let members=[];
+let members = [];
+let dataLoaded = false;
 
+/* LOAD DATA */
 async function loadMembers(){
-  const res=await fetch(csvUrl);
-  const text=await res.text();
-  const rows=text.split('\n').slice(1);
+  try{
+    const res = await fetch(csvUrl);
+    const text = await res.text();
+    const rows = text.split("\n").slice(1);
 
-  members=rows.map(r=>{
-    const c=r.split(',');
-    return{
-      id:c[0],
-      nik:c[3],
-      nama:c[4],
-      status:c[10],
-      pt:c[12],
-      komisariat:c[13],
-      jabatan:c[14],
-      posisi:c[15],
-      foto:c[16]||'https://via.placeholder.com/80x100',
-      ttd:'https://raw.githubusercontent.com/prayogas221/KTAHMIMIMIKA/532122c56719c026efcea792e03b13f7ddc44127/ttd.png'
-    }
-  })
+    members = rows.map(r=>{
+      const c = r.split(",");
+      return {
+        id: c[0],
+        nik: c[3],
+        nama: c[4],
+        status: c[10],
+        pt: c[12],
+        komisariat: c[13],
+        jabatan: c[14],
+        posisi: c[15],
+        foto: c[16] || "https://via.placeholder.com/80x100",
+        ttd: "https://raw.githubusercontent.com/prayogas221/KTAHMIMIMIKA/532122c56719c026efcea792e03b13f7ddc44127/ttd.png"
+      }
+    });
+
+    dataLoaded = true;
+  }catch(e){
+    alert("Gagal load data CSV");
+  }
 }
 
+/* LOGIN */
 function login(){
-  const u = document.getElementById("username").value.trim();
+  const u = document.getElementById("username").value.trim().toLowerCase();
   const p = document.getElementById("password").value.trim();
-
   const error = document.getElementById("login-error");
+
+  if(!dataLoaded){
+    alert("Data belum selesai dimuat, tunggu 3 detik lalu login lagi.");
+    return;
+  }
 
   if(users[u] && users[u].password === p){
     document.getElementById("login-form").classList.add("hidden");
@@ -277,25 +272,23 @@ function login(){
   }
 }
 
-
+/* QR */
 async function generateQR(text){
   return await QRCode.toDataURL(text,{width:80});
 }
 
+/* GENERATE CARD */
 async function generateKTA(){
-  const container=document.getElementById('kta-container');
-  container.innerHTML='';
+  const container = document.getElementById("kta-container");
+  container.innerHTML = "";
 
   for(const m of members){
+    const qr = await generateQR(m.id);
 
-    const qr=await generateQR(m.id);
+    const card = document.createElement("div");
+    card.className = "kta-card";
 
-    const isExecutive = m.jabatan && m.jabatan.toLowerCase().includes("ketua");
-
-    const card=document.createElement('div');
-    card.className=isExecutive?'kta-card executive':'kta-card';
-
-    card.innerHTML=`
+    card.innerHTML = `
       <img src="${logo}" class="kta-watermark">
       <div class="kta-chip"></div>
 
@@ -310,7 +303,6 @@ async function generateKTA(){
         <div class="kta-left">
           <img src="${m.foto}">
         </div>
-
         <div class="kta-right">
           <div class="kta-number">${m.id}</div>
           <h2>${m.nama}</h2>
@@ -335,10 +327,9 @@ async function generateKTA(){
   }
 }
 
-(async()=>{await loadMembers();})();
+loadMembers();
 
 </script>
 
 </body>
 </html>
-
