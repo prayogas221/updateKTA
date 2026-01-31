@@ -144,6 +144,12 @@ body{
   z-index:2;
 }
 
+.kta-left{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
 .kta-left img{
   width:20mm;
   height:25mm;
@@ -152,9 +158,18 @@ body{
   border:1.5px solid #2d5016;
 }
 
+.ttd-img{
+  width:14mm;
+  margin-top:2px;
+}
+
+/* RIGHT SIDE */
 .kta-right{
   flex:1;
   font-size:6.5px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
 }
 
 .kta-right h2{
@@ -172,16 +187,11 @@ body{
   font-weight:600;
 }
 
-/* QR + TTD + Dual Kalender */
+/* QR + Kalender */
 .kta-bottom{
   display:flex;
   justify-content:space-between;
   align-items:flex-end;
-  margin-top:2px;
-}
-
-.ttd-img{
-  width:30%;
   margin-top:2px;
 }
 
@@ -190,7 +200,11 @@ body{
   flex-direction:column;
   align-items:flex-end;
   gap:2px;
-  font-size:5px;
+}
+
+.qr-section img{
+  width:20px;
+  height:20px;
 }
 
 .qr-gold-line{
@@ -200,10 +214,10 @@ body{
   border-radius:2px;
 }
 
+/* Dual Calendar */
 .dual-calendar{
   text-align:right;
   font-size:5.5px;
-  margin-top:2px;
 }
 
 .dual-calendar hr{
@@ -220,7 +234,6 @@ body{
 /* PRINT 8 PER A4 */
 @media print{
   body{ background:white; }
-
   #kta-container{
     display:grid;
     grid-template-columns: repeat(2, 86mm);
@@ -228,7 +241,6 @@ body{
     gap:6mm;
     justify-content:center;
   }
-
   .kta-card{ box-shadow:none; }
 }
 </style>
@@ -259,7 +271,6 @@ const users = {
 };
 
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkxnLr5GK_w_WRktgY-SZZ2pjBHlDVSphEYLLSBLntg0IyQB3Z5178wjaES8-yMQV7ZcMTGym-VoZA/pub?gid=0&single=true&output=csv";
-
 const logo = "https://upload.wikimedia.org/wikipedia/commons/6/67/Lambang_HMI_%28Original%29.png";
 
 let members = [];
@@ -276,9 +287,11 @@ async function loadMembers(){
       id: c[0],
       nik: c[3],
       nama: c[4],
+      status: c[5] || "Aktif",
       pt: c[12],
       komisariat: c[13],
       jabatan: c[14] || "",
+      posisi: c[15] || "",
       foto: c[16] || "https://via.placeholder.com/100x120",
       ttd: "https://raw.githubusercontent.com/prayogas221/KTAHMIMIMIKA/main/ttd.png"
     }
@@ -321,10 +334,9 @@ async function toBase64(url){
 async function generateQR(text){
   const baseUrl = "https://your-verifikasi-kta-online.com/?id=";
   const url = baseUrl + btoa(text); // terenkripsi
-  return await QRCode.toDataURL(url,{width:120});
+  return await QRCode.toDataURL(url,{width:20,height:20});
 }
 
-// Fungsi sederhana konversi tanggal Masehi ke Hijriah (perkiraan)
 function toHijri(date){
   const day = date.getDate();
   const month = date.getMonth()+1;
@@ -376,13 +388,16 @@ async function generateKTA(){
           <img src="${ttd64}" class="ttd-img">
         </div>
         <div class="kta-right">
-          <div class="kta-number">${m.id}</div>
-          <h2>${m.nama}</h2>
-          <p>NIK: ${m.nik}</p>
-          <p>PT: ${m.pt}</p>
-          <p>Komisariat: ${m.komisariat}</p>
-          <p>Jabatan: ${m.jabatan}</p>
-
+          <div>
+            <div class="kta-number">ID: ${m.id}</div>
+            <h2>${m.nama}</h2>
+            <p>NIK: ${m.nik}</p>
+            <p>Status: ${m.status}</p>
+            <p>Perguruan Tinggi: ${m.pt}</p>
+            <p>Komisariat: ${m.komisariat}</p>
+            <p>Jabatan: ${m.jabatan}</p>
+            <p>Posisi: ${m.posisi}</p>
+          </div>
           <div class="kta-bottom">
             <div class="qr-section">
               <div class="qr-gold-line"></div>
