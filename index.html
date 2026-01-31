@@ -1,61 +1,319 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Verifikasi KTA HMI Mimika</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KTA HMI Mimika - Final System</title>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
 body{
-    font-family:Arial;
-    text-align:center;
-    background:#f4f4f4;
-    padding:50px;
+  font-family:'Poppins',sans-serif;
+  background:#f1f1f1;
+  padding:1rem;
 }
-.box{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    display:inline-block;
+.hidden{display:none;}
+
+#login-form{
+  max-width:320px;
+  margin:4rem auto;
+  padding:2rem;
+  background:white;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
-.valid{
-    color:green;
-    font-weight:bold;
+#login-form input{
+  width:100%;
+  padding:10px;
+  margin-bottom:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
 }
-.invalid{
-    color:red;
-    font-weight:bold;
+#login-form button{
+  width:100%;
+  padding:10px;
+  background:#2d5016;
+  color:white;
+  border:none;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+#kta-container{
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+  justify-content:center;
+}
+
+/* PVC */
+.kta-card{
+  width:86mm;
+  height:54mm;
+  border-radius:14px;
+  position:relative;
+  overflow:hidden;
+  background:white;
+  box-shadow:0 10px 20px rgba(0,0,0,0.25);
+  border-top:3px solid #2d5016;
+  border-bottom:3px solid #d4af37;
+}
+
+/* Header */
+.kta-header{
+  text-align:center;
+  padding-top:4px;
+}
+.bismillah{ font-size:8px; font-weight:600; }
+.kta-title{ font-size:9px; font-weight:700; }
+.kta-divider{
+  height:1.5px;
+  width:30mm;
+  background:linear-gradient(90deg,#2d5016,#d4af37);
+  margin:3px auto;
+}
+
+/* Content */
+.kta-content{
+  display:flex;
+  gap:6px;
+  padding:0 8px;
+}
+.kta-left{
+  width:28%;
+  text-align:center;
+}
+.kta-left img{
+  width:20mm;
+  height:25mm;
+  object-fit:cover;
+  border-radius:4px;
+  border:1.5px solid #2d5016;
+}
+.ttd{
+  width:20mm;
+  height:8mm;
+  object-fit:contain;
+  margin-top:2px;
+}
+
+.kta-right{
+  width:72%;
+  font-size:6.5px;
+}
+.kta-right h2{
+  font-size:8px;
+  margin:0;
+}
+.kta-number{
+  font-size:7px;
+  font-weight:600;
+}
+
+/* Bottom Section */
+.kta-bottom{
+  position:absolute;
+  bottom:5px;
+  left:8px;
+  right:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+}
+
+/* Date */
+.date-print{
+  font-size:6px;
+  text-align:left;
+}
+.date-line{
+  height:2px;
+  width:30px;
+  background:linear-gradient(to right,#2d5016,#d4af37);
+  margin:2px 0;
+}
+
+/* QR */
+.qr-box img{
+  height:40px;
+}
+
+/* PRINT */
+@media print{
+  body{ background:white; }
+  #kta-container{
+    display:grid;
+    grid-template-columns: repeat(2, 86mm);
+    grid-auto-rows:54mm;
+    gap:6mm;
+    justify-content:center;
+  }
+  .kta-card{ box-shadow:none; }
 }
 </style>
 </head>
 <body>
 
-<div class="box">
-<h2>Verifikasi KTA</h2>
-<div id="result"></div>
+<!-- LOGIN -->
+<div id="login-form">
+  <h2 style="text-align:center;">Login Sistem KTA</h2>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <p id="login-error" class="hidden" style="color:red;text-align:center;">Login gagal</p>
+</div>
+
+<!-- PAGE -->
+<div id="kta-page" class="hidden">
+  <select id="namaFilter"></select>
+  <button onclick="generateKTA()">Generate</button>
+  <button onclick="downloadPDF()">Download PDF</button>
+  <div id="kta-container"></div>
 </div>
 
 <script>
-function decrypt(text){
-    return atob(text);
+
+/* LOGIN SYSTEM (TIDAK DIUBAH) */
+const users = {
+  "cabang mimika": { password: "cabang123", role:"all" },
+  "komisariat ekonomi": { password: "eko123", role:"Komisariat Ekonomi" },
+  "komisariat insan cita": { password: "insan123", role:"Komisariat Insan Cita" },
+  "komisariat lafran pane": { password: "lafran123", role:"Komisariat Lafran Pane" }
+};
+
+let currentRole = "all";
+
+function login(){
+  const u = document.getElementById("username").value.trim().toLowerCase();
+  const p = document.getElementById("password").value.trim();
+
+  if(users[u] && users[u].password === p){
+    currentRole = users[u].role;
+    document.getElementById("login-form").classList.add("hidden");
+    document.getElementById("kta-page").classList.remove("hidden");
+    populateDropdown();
+  }else{
+    document.getElementById("login-error").classList.remove("hidden");
+  }
 }
 
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
+/* GOOGLE SHEET CSV */
+const csvUrl = "PASTE_LINK_CSV_KAMU_DISINI";
+let members = [];
 
-if(id){
-    const serial = decrypt(id);
+async function loadMembers(){
+  const res = await fetch(csvUrl);
+  const text = await res.text();
+  const rows = text.split("\n").slice(1);
 
-    /* Nanti bisa disambungkan ke spreadsheet */
-    if(serial.includes("HMI-MIMIKA")){
-        document.getElementById("result").innerHTML=
-        "<div class='valid'>✔ Anggota Terdaftar</div><br>"+serial;
-    }else{
-        document.getElementById("result").innerHTML=
-        "<div class='invalid'>✘ Tidak Terdaftar</div>";
+  members = rows.map(r=>{
+    const c = r.split(",");
+    return {
+      id: c[0],
+      nama: c[4],
+      komisariat: c[13],
+      foto: c[16],
+      ttd: "https://raw.githubusercontent.com/prayogas221/KTAHMIMIMIKA/main/ttd.png"
     }
-}else{
-    document.getElementById("result").innerHTML="Data tidak ditemukan";
+  });
 }
-</script>
+loadMembers();
 
+function populateDropdown(){
+  const select = document.getElementById("namaFilter");
+  select.innerHTML = "<option value='all'>Semua Anggota</option>";
+
+  const filtered = currentRole === "all" 
+    ? members 
+    : members.filter(m=>m.komisariat === currentRole);
+
+  filtered.forEach(m=>{
+    select.innerHTML += `<option value="${m.id}">${m.nama}</option>`;
+  });
+}
+
+/* ENKRIPSI SERIAL */
+function encrypt(text){
+  return btoa("HMI-"+text);
+}
+
+/* TANGGAL */
+function tanggalMasehi(){
+  const bulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
+  const d = new Date();
+  return `${String(d.getDate()).padStart(2,'0')} ${bulan[d.getMonth()]} ${d.getFullYear()} M`;
+}
+
+function tanggalHijriah(){
+  return new Intl.DateTimeFormat('id-TN-u-ca-islamic',{
+    day:'numeric',month:'long',year:'numeric'
+  }).format(new Date()) + " H";
+}
+
+/* GENERATE */
+async function generateKTA(){
+  const container = document.getElementById("kta-container");
+  container.innerHTML = "";
+
+  const selected = document.getElementById("namaFilter").value;
+  const filtered = selected==="all"
+    ? (currentRole==="all"?members:members.filter(m=>m.komisariat===currentRole))
+    : members.filter(m=>m.id===selected);
+
+  for(const m of filtered){
+
+    const encrypted = encrypt(m.id);
+    const qrLink = "verifikasi.html?id="+encrypted;
+    const qrImg = await QRCode.toDataURL(qrLink,{width:120});
+
+    const card = document.createElement("div");
+    card.className="kta-card";
+
+    card.innerHTML=`
+      <div class="kta-header">
+        <div class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+        <div class="kta-title">KARTU TANDA ANGGOTA</div>
+        <div class="kta-divider"></div>
+      </div>
+
+      <div class="kta-content">
+        <div class="kta-left">
+          <img src="${m.foto}">
+          <img src="${m.ttd}" class="ttd">
+        </div>
+        <div class="kta-right">
+          <div class="kta-number">${m.id}</div>
+          <h2>${m.nama}</h2>
+          <p>Komisariat: ${m.komisariat}</p>
+        </div>
+      </div>
+
+      <div class="kta-bottom">
+        <div class="date-print">
+          ${tanggalMasehi()}
+          <div class="date-line"></div>
+          ${tanggalHijriah()}
+        </div>
+        <div class="qr-box">
+          <img src="${qrImg}">
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  }
+}
+
+/* PDF */
+async function downloadPDF(){
+  const element = document.getElementById("kta-container");
+  html2pdf().from(element).save("KTA_HMI_MIMIKA.pdf");
+}
+
+</script>
 </body>
 </html>
