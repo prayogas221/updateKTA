@@ -6,7 +6,6 @@
 <title>KTA HMI Mimika - Elite Stable</title>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -54,11 +53,11 @@ body{
   justify-content:center;
 }
 
-/* ================= CARD ================= */
+/* ================= KTA CARD ================= */
 
 .kta-card{
-  width:340px;
-  height:5.4cm;
+  width:86mm;
+  height:54mm;
   border-radius:14px;
   position:relative;
   overflow:hidden;
@@ -72,7 +71,7 @@ body{
   position:absolute;
   left:0;
   top:0;
-  width:55px;
+  width:10mm;
   height:100%;
   background:linear-gradient(180deg,#0f3d1c,#2d5016,#000);
 }
@@ -83,7 +82,7 @@ body{
   position:absolute;
   right:0;
   top:0;
-  width:45px;
+  width:8mm;
   height:100%;
   background:linear-gradient(180deg,#000,#2d5016,#0f3d1c);
 }
@@ -91,77 +90,70 @@ body{
 /* WATERMARK */
 .kta-watermark{
   position:absolute;
-  width:170px;
+  width:40mm;
   opacity:0.05;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
 }
 
-/* CHIP */
-.kta-chip{
-  width:36px;
-  height:24px;
-  background:linear-gradient(135deg,#d4af37,#f6e27a,#c9a227);
-  border-radius:4px;
+/* LOGO NYATA */
+.kta-logo{
   position:absolute;
-  top:70px;
-  left:70px;
+  top:6px;
+  left:12mm;
+  width:18px;
+  z-index:3;
 }
 
 /* HEADER */
 .kta-header{
   text-align:center;
-  padding-top:10px;
+  padding-top:6px;
   position:relative;
   z-index:2;
 }
 
-.kta-bismillah{
-  font-size:10px;
-  font-weight:600;
-}
-
 .kta-title{
-  font-size:11px;
+  font-size:9px;
   font-weight:700;
 }
 
 .kta-subtitle{
-  font-size:9px;
+  font-size:7px;
 }
 
 .kta-divider{
-  height:2px;
-  width:120px;
+  height:1.5px;
+  width:30mm;
   background:#2d5016;
-  margin:4px auto;
+  margin:3px auto;
 }
 
 /* CONTENT */
 .kta-content{
   display:flex;
-  gap:8px;
-  padding:0 15px;
+  gap:6px;
+  padding:0 10mm 0 12mm;
   position:relative;
   z-index:2;
 }
 
 .kta-left img{
-  width:60px;
-  height:75px;
+  width:20mm;
+  height:25mm;
   object-fit:cover;
-  border-radius:6px;
-  border:2px solid #2d5016;
+  border-radius:4px;
+  border:1.5px solid #2d5016;
 }
 
 .kta-right{
   flex:1;
-  font-size:8px;
+  font-size:6.5px;
 }
 
 .kta-right h2{
-  font-size:10px;
+  font-size:8px;
   font-weight:700;
   margin:0;
 }
@@ -171,29 +163,64 @@ body{
 }
 
 .kta-number{
-  font-size:9px;
+  font-size:7px;
   font-weight:600;
   letter-spacing:1px;
 }
 
+/* QR & TTD */
 .kta-bottom{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-top:4px;
-}
-
-.kta-bottom img{
-  height:18px;
-}
-
-.kta-valid{
-  font-size:7px;
-  font-weight:600;
-  color:#2d5016;
   margin-top:2px;
 }
 
+.kta-bottom img{
+  height:14px;
+}
+
+/* CHIP EMAS DI QR */
+.qr-wrapper{
+  position:relative;
+}
+
+.kta-chip{
+  width:8mm;
+  height:5mm;
+  background:linear-gradient(135deg,#d4af37,#f6e27a,#c9a227);
+  border-radius:2px;
+  position:absolute;
+  bottom:0;
+  right:0;
+  box-shadow:0 0 4px rgba(212,175,55,0.7);
+  z-index:3;
+}
+
+/* GOLD LIMITED */
+.gold{
+  background:linear-gradient(135deg,#fff8dc,#f6e27a,#ffffff);
+  border:1.5px solid #d4af37;
+}
+
+/* PRINT 8 PER A4 */
+@media print{
+  body{
+    background:white;
+  }
+
+  #kta-container{
+    display:grid;
+    grid-template-columns: repeat(2, 86mm);
+    grid-auto-rows:54mm;
+    gap:6mm;
+    justify-content:center;
+  }
+
+  .kta-card{
+    box-shadow:none;
+  }
+}
 </style>
 </head>
 <body>
@@ -217,48 +244,43 @@ const users = {
 };
 
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkxnLr5GK_w_WRktgY-SZZ2pjBHlDVSphEYLLSBLntg0IyQB3Z5178wjaES8-yMQV7ZcMTGym-VoZA/pub?gid=0&single=true&output=csv";
+
 const logo = "https://upload.wikimedia.org/wikipedia/commons/6/67/Lambang_HMI_%28Original%29.png";
 
 let members = [];
 let dataLoaded = false;
 
-/* LOAD DATA */
 async function loadMembers(){
-  try{
-    const res = await fetch(csvUrl);
-    const text = await res.text();
-    const rows = text.split("\n").slice(1);
+  const res = await fetch(csvUrl);
+  const text = await res.text();
+  const rows = text.split("\n").slice(1);
 
-    members = rows.map(r=>{
-      const c = r.split(",");
-      return {
-        id: c[0],
-        nik: c[3],
-        nama: c[4],
-        status: c[10],
-        pt: c[12],
-        komisariat: c[13],
-        jabatan: c[14],
-        posisi: c[15],
-        foto: c[16] || "https://via.placeholder.com/80x100",
-        ttd: "https://raw.githubusercontent.com/prayogas221/KTAHMIMIMIKA/532122c56719c026efcea792e03b13f7ddc44127/ttd.png"
-      }
-    });
+  members = rows.map(r=>{
+    const c = r.split(",");
+    return {
+      id: c[0],
+      nik: c[3],
+      nama: c[4],
+      status: c[10],
+      pt: c[12],
+      komisariat: c[13],
+      jabatan: c[14] || "",
+      posisi: c[15] || "",
+      foto: c[16] || "https://via.placeholder.com/100x120",
+      ttd: "https://raw.githubusercontent.com/prayogas221/KTAHMIMIMIKA/main/ttd.png"
+    }
+  });
 
-    dataLoaded = true;
-  }catch(e){
-    alert("Gagal load data CSV");
-  }
+  dataLoaded = true;
 }
 
-/* LOGIN */
 function login(){
   const u = document.getElementById("username").value.trim().toLowerCase();
   const p = document.getElementById("password").value.trim();
   const error = document.getElementById("login-error");
 
   if(!dataLoaded){
-    alert("Data belum selesai dimuat, tunggu 3 detik lalu login lagi.");
+    alert("Data masih dimuat, tunggu sebentar...");
     return;
   }
 
@@ -272,28 +294,31 @@ function login(){
   }
 }
 
-/* QR */
 async function generateQR(text){
-  return await QRCode.toDataURL(text,{width:80});
+  return await QRCode.toDataURL(text,{width:120});
 }
 
-/* GENERATE CARD */
 async function generateKTA(){
   const container = document.getElementById("kta-container");
   container.innerHTML = "";
 
   for(const m of members){
-    const qr = await generateQR(m.id);
+
+    const verifyURL = window.location.origin + "/verifikasi.html?id=" + m.id;
+    const qr = await generateQR(verifyURL);
+
+    const isGold = m.jabatan.toLowerCase().includes("ketua") ||
+                   m.jabatan.toLowerCase().includes("sekretaris") ||
+                   m.jabatan.toLowerCase().includes("bendahara");
 
     const card = document.createElement("div");
-    card.className = "kta-card";
+    card.className = isGold ? "kta-card gold" : "kta-card";
 
     card.innerHTML = `
       <img src="${logo}" class="kta-watermark">
-      <div class="kta-chip"></div>
+      <img src="${logo}" class="kta-logo">
 
       <div class="kta-header">
-        <div class="kta-bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
         <div class="kta-title">KARTU TANDA ANGGOTA</div>
         <div class="kta-subtitle">HMI CABANG PERSIAPAN MIMIKA</div>
         <div class="kta-divider"></div>
@@ -315,10 +340,11 @@ async function generateKTA(){
 
           <div class="kta-bottom">
             <img src="${m.ttd}">
-            <img src="${qr}">
+            <div class="qr-wrapper">
+              <div class="kta-chip"></div>
+              <img src="${qr}">
+            </div>
           </div>
-
-          <div class="kta-valid">VALID SEUMUR HIDUP</div>
         </div>
       </div>
     `;
