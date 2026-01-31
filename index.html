@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -11,211 +11,58 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body{
-  font-family:'Poppins',sans-serif;
-  background:#f1f1f1;
-  padding:1rem;
-}
-
+body{ font-family:'Poppins',sans-serif; background:#f1f1f1; padding:1rem; }
 .hidden{display:none;}
-
-#login-form{
-  max-width:320px;
-  margin:4rem auto;
-  padding:2rem;
-  background:white;
-  border-radius:12px;
-  box-shadow:0 10px 25px rgba(0,0,0,0.15);
-}
-
-#login-form input, #login-form select{
-  width:100%;
-  padding:10px;
-  margin-bottom:12px;
-  border:1px solid #ccc;
-  border-radius:8px;
-}
-
-#login-form button{
-  width:100%;
-  padding:10px;
-  background:#2d5016;
-  color:white;
-  border:none;
-  border-radius:8px;
-  font-weight:600;
-  cursor:pointer;
-}
-
-#kta-container{
-  display:flex;
-  flex-wrap:wrap;
-  gap:15px;
-  justify-content:center;
-}
+#login-form{ max-width:320px; margin:4rem auto; padding:2rem; background:white; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.15);}
+#login-form input, #login-form select{ width:100%; padding:10px; margin-bottom:12px; border:1px solid #ccc; border-radius:8px;}
+#login-form button{ width:100%; padding:10px; background:#2d5016; color:white; border:none; border-radius:8px; font-weight:600; cursor:pointer;}
+#kta-container{ display:flex; flex-wrap:wrap; gap:15px; justify-content:center;}
 
 /* PVC SIZE */
-.kta-card{
-  width:86mm;
-  height:54mm;
-  border-radius:14px;
-  position:relative;
-  overflow:hidden;
-  background:white;
-  box-shadow:0 12px 25px rgba(0,0,0,0.25);
-  border-top:3px solid #2d5016;
-  border-bottom:3px solid #d4af37;
-}
+.kta-card{ width:86mm; height:54mm; border-radius:14px; position:relative; overflow:hidden; background:white; box-shadow:0 12px 25px rgba(0,0,0,0.25); border-top:3px solid #2d5016; border-bottom:3px solid #d4af37; }
 
 /* PANEL */
-.kta-card::before{
-  content:'';
-  position:absolute;
-  left:0;
-  top:0;
-  width:10mm;
-  height:100%;
-  background:linear-gradient(180deg,#0f3d1c,#2d5016,#000);
-}
-
-.kta-card::after{
-  content:'';
-  position:absolute;
-  right:0;
-  top:0;
-  width:8mm;
-  height:100%;
-  background:linear-gradient(180deg,#000,#2d5016,#0f3d1c);
-}
+.kta-card::before{ content:''; position:absolute; left:0; top:0; width:10mm; height:100%; background:linear-gradient(180deg,#0f3d1c,#2d5016,#000);}
+.kta-card::after{ content:''; position:absolute; right:0; top:0; width:8mm; height:100%; background:linear-gradient(180deg,#000,#2d5016,#0f3d1c);}
 
 /* WATERMARK */
-.kta-watermark{
-  position:absolute;
-  width:40mm;
-  opacity:0.05;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-}
+.kta-watermark{ position:absolute; width:40mm; opacity:0.05; top:50%; left:50%; transform:translate(-50%,-50%); }
 
 /* LOGO */
-.kta-logo{
-  position:absolute;
-  top:6px;
-  right:10mm;
-  width:18px;
-  z-index:3;
-}
+.kta-logo{ position:absolute; top:6px; right:10mm; width:18px; z-index:3; }
 
 /* HEADER */
-.kta-header{
-  text-align:center;
-  padding-top:4px;
-  position:relative;
-  z-index:2;
-}
-
-.bismillah{
-  font-size:9px;
-  font-weight:600;
-}
-
-.kta-title{
-  font-size:9px;
-  font-weight:700;
-}
-
-.kta-subtitle{
-  font-size:7px;
-}
-
-.kta-divider{
-  height:1.5px;
-  width:30mm;
-  background:linear-gradient(90deg,#2d5016,#d4af37);
-  margin:3px auto;
-}
+.kta-header{ text-align:center; padding-top:4px; position:relative; z-index:2; }
+.bismillah{ font-size:9px; font-weight:600; }
+.kta-title{ font-size:9px; font-weight:700; }
+.kta-subtitle{ font-size:7px; }
+.kta-divider{ height:1.5px; width:30mm; background:linear-gradient(90deg,#2d5016,#d4af37); margin:3px auto; }
 
 /* CONTENT */
-.kta-content{
-  display:flex;
-  gap:6px;
-  padding:0 10mm 0 12mm;
-  position:relative;
-  z-index:2;
-}
+.kta-content{ display:flex; gap:6px; padding:0 10mm 0 12mm; position:relative; z-index:2; }
+.kta-left img{ width:20mm; height:25mm; object-fit:cover; border-radius:4px; border:1.5px solid #2d5016;}
+.kta-right{ flex:1; font-size:6.5px;}
+.kta-right h2{ font-size:8px; font-weight:700; margin:0;}
+.kta-right p{ margin:1px 0;}
+.kta-number{ font-size:7px; font-weight:600; }
 
-.kta-left img{
-  width:20mm;
-  height:25mm;
-  object-fit:cover;
-  border-radius:4px;
-  border:1.5px solid #2d5016;
-}
+/* QR + Kalender */
+.kta-bottom{ display:flex; flex-direction:column; align-items:flex-end; gap:2px; margin-top:2px;}
+.qr-section{ display:flex; flex-direction:column; align-items:center; gap:2px; }
+.qr-gold-line{ width:3px; height:25px; background:linear-gradient(#d4af37,#f6e27a); border-radius:2px; }
+.qr-section img{ width:30mm; height:30mm; }
 
-.kta-right{
-  flex:1;
-  font-size:6.5px;
-}
-
-.kta-right h2{
-  font-size:8px;
-  font-weight:700;
-  margin:0;
-}
-
-.kta-right p{
-  margin:1px 0;
-}
-
-.kta-number{
-  font-size:7px;
-  font-weight:600;
-}
-
-/* QR */
-.kta-bottom{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-  margin-top:2px;
-}
-
-.qr-section{
-  display:flex;
-  align-items:center;
-  gap:3px;
-}
-
-.qr-gold-line{
-  width:3px;
-  height:20px;
-  background:linear-gradient(#d4af37,#f6e27a);
-  border-radius:2px;
-}
-
-.kta-bottom img{
-  height:18px;
-}
+/* Kalender */
+.kalender{ font-size:6px; text-align:center; line-height:1.2; }
+.kalender-divider{ height:1px; width:100%; background:linear-gradient(90deg,#2d5016,#d4af37); margin:2px 0; }
 
 /* GOLD */
-.gold{
-  background:linear-gradient(135deg,#fff8dc,#f6e27a,#ffffff);
-  border:1.5px solid #d4af37;
-}
+.gold{ background:linear-gradient(135deg,#fff8dc,#f6e27a,#ffffff); border:1.5px solid #d4af37; }
 
 /* PRINT 8 PER A4 */
 @media print{
   body{ background:white; }
-
-  #kta-container{
-    display:grid;
-    grid-template-columns: repeat(2, 86mm);
-    grid-auto-rows:54mm;
-    gap:6mm;
-    justify-content:center;
-  }
-
+  #kta-container{ display:grid; grid-template-columns: repeat(2, 86mm); grid-auto-rows:54mm; gap:6mm; justify-content:center; }
   .kta-card{ box-shadow:none; }
 }
 </style>
@@ -238,7 +85,6 @@ body{
 </div>
 
 <script>
-
 const users = {
   "cabang mimika": { password: "cabang123", role:"all" },
   "komisariat ekonomi": { password: "eko123", role:"Komisariat Ekonomi" },
@@ -251,6 +97,19 @@ const logo = "https://upload.wikimedia.org/wikipedia/commons/6/67/Lambang_HMI_%2
 
 let members = [];
 let currentRole = "all";
+
+// Fungsi hijriah sederhana
+function toHijri(date){
+  // konversi kasar (untuk cetak KTA cukup kasar)
+  const day = date.getDate();
+  const month = date.getMonth()+1;
+  const year = date.getFullYear();
+  // simple approximation, bisa diganti library
+  const hijriYear = year - 622 + Math.floor((month-3)/12);
+  const hijriMonth = (month+9)%12 +1;
+  const hijriDay = day;
+  return `${('0'+hijriDay).slice(-2)}/${('0'+hijriMonth).slice(-2)}/${hijriYear} H`;
+}
 
 async function loadMembers(){
   const res = await fetch(csvUrl);
@@ -266,7 +125,9 @@ async function loadMembers(){
       pt: c[12],
       komisariat: c[13],
       jabatan: c[14] || "",
-      foto: c[16] || "https://via.placeholder.com/100x120",
+      status: c[15] || "",
+      posisi: c[16] || "",
+      foto: c[17] || "https://via.placeholder.com/100x120",
       ttd: "https://raw.githubusercontent.com/prayogas221/KTAHMIMIMIKA/main/ttd.png"
     }
   });
@@ -276,10 +137,7 @@ function populateDropdown(){
   const select = document.getElementById("namaFilter");
   select.innerHTML = "<option value='all'>Semua Anggota</option>";
 
-  const filtered = currentRole === "all" 
-    ? members 
-    : members.filter(m=>m.komisariat === currentRole);
-
+  const filtered = currentRole === "all" ? members : members.filter(m=>m.komisariat === currentRole);
   filtered.forEach(m=>{
     select.innerHTML += `<option value="${m.id}">${m.nama}</option>`;
   });
@@ -310,7 +168,7 @@ async function toBase64(url){
 }
 
 async function generateQR(text){
-  return await QRCode.toDataURL(text,{width:120});
+  return await QRCode.toDataURL(text,{width:150}); // diperbesar
 }
 
 async function generateKTA(){
@@ -318,25 +176,23 @@ async function generateKTA(){
   container.innerHTML = "";
 
   const selectedId = document.getElementById("namaFilter").value;
-
   const filtered = selectedId === "all"
     ? (currentRole === "all" ? members : members.filter(m=>m.komisariat===currentRole))
     : members.filter(m=>m.id===selectedId);
 
   for(const m of filtered){
-
     let foto64 = await toBase64(m.foto);
     let ttd64 = await toBase64(m.ttd);
-
     const qr = await generateQR(m.id);
+    const isGold = m.jabatan.toLowerCase().includes("ketua") || m.jabatan.toLowerCase().includes("sekretaris") || m.jabatan.toLowerCase().includes("bendahara");
 
-    const isGold = m.jabatan.toLowerCase().includes("ketua") ||
-                   m.jabatan.toLowerCase().includes("sekretaris") ||
-                   m.jabatan.toLowerCase().includes("bendahara");
+    // Tanggal
+    const today = new Date();
+    const tanggalMasehi = today.toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'}) + " M";
+    const tanggalHijri = toHijri(today);
 
     const card = document.createElement("div");
     card.className = isGold ? "kta-card gold" : "kta-card";
-
     card.innerHTML = `
       <img src="${logo}" class="kta-watermark">
       <img src="${logo}" class="kta-logo">
@@ -359,42 +215,33 @@ async function generateKTA(){
           <p>PT: ${m.pt}</p>
           <p>Komisariat: ${m.komisariat}</p>
           <p>Jabatan: ${m.jabatan}</p>
+          <p>Status: ${m.status}</p>
+          <p>Posisi: ${m.posisi}</p>
 
           <div class="kta-bottom">
             <img src="${ttd64}">
             <div class="qr-section">
               <div class="qr-gold-line"></div>
               <img src="${qr}">
+              <div class="kalender">${tanggalMasehi}</div>
+              <div class="kalender-divider"></div>
+              <div class="kalender">${tanggalHijri}</div>
             </div>
           </div>
         </div>
       </div>
     `;
-
     container.appendChild(card);
   }
 }
 
 async function downloadPDF(){
   const element = document.getElementById("kta-container");
-
-  await Promise.all(
-    Array.from(element.querySelectorAll("img")).map(img=>{
-      if(img.complete) return Promise.resolve();
-      return new Promise(res=>img.onload=res);
-    })
-  );
-
-  html2pdf().set({
-    margin:5,
-    filename:"KTA_HMI_MIMIKA.pdf",
-    html2canvas:{scale:2,useCORS:true,allowTaint:true},
-    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
-  }).from(element).save();
+  await Promise.all(Array.from(element.querySelectorAll("img")).map(img=> img.complete ? Promise.resolve() : new Promise(res=>img.onload=res)));
+  html2pdf().set({margin:5, filename:"KTA_HMI_MIMIKA.pdf", html2canvas:{scale:2,useCORS:true,allowTaint:true}, jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(element).save();
 }
 
 loadMembers();
-
 </script>
 </body>
 </html>
