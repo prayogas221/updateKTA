@@ -159,15 +159,15 @@ body{
 }
 
 .ttd-img{
-  width:10mm;
-  margin-top:1px;
+  width:18mm;
+  margin-top:2px;
   object-fit:contain;
 }
 
 /* RIGHT SIDE */
 .kta-right{
   flex:1;
-  font-size:6.5px;
+  font-size:7px;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
@@ -193,25 +193,25 @@ body{
   display:flex;
   justify-content:flex-end;
   align-items:flex-end;
-  margin-top:5px;
-  gap:5px;
+  margin-top:2px;
+  gap:2px;
 }
 
 .qr-section{
   display:flex;
   flex-direction:column;
   align-items:flex-end;
-  gap:5px;
+  gap:2px;
 }
 
 .qr-section img{
-  width:18px;
-  height:18px;
+  width:24px;
+  height:24px;
 }
 
 .qr-gold-line{
   width:3px;
-  height:16px;
+  height:24px;
   background:linear-gradient(#d4af37,#f6e27a);
   border-radius:2px;
 }
@@ -219,7 +219,7 @@ body{
 /* Dual Calendar */
 .dual-calendar{
   text-align:right;
-  font-size:5.5px;
+  font-size:6px;
   margin-top:2px;
 }
 
@@ -273,7 +273,7 @@ const users = {
   "komisariat lafran pane": { password: "lafran123", role:"Komisariat Lafran Pane" }
 };
 
-const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkxnLr5GK_w_WRktgY-SZZ2pjBHlDVSphEYLLSBLntg0IyQB3Z5178wjaES8-yMQV7ZcMTGym-VoZA/pub?gid=0&single=true&output=csv";
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkxnLr5GK_w_WRktgY-SZZ2pjBHlDVSphEYLLSBLntg0IyQB3Z5178wjaES8-yMQV7ZcMTGym-VoZA/pub?output=csv";
 const logo = "https://upload.wikimedia.org/wikipedia/commons/6/67/Lambang_HMI_%28Original%29.png";
 
 let members = [];
@@ -282,20 +282,20 @@ let currentRole = "all";
 async function loadMembers(){
   const res = await fetch(csvUrl);
   const text = await res.text();
-  const rows = text.split("\n").slice(1);
+  const rows = text.split("\n").slice(1).filter(r=>r.trim()!=="");
 
   members = rows.map(r=>{
     const c = r.split(",");
     return {
-      id: c[0],
-      nik: c[3],
-      nama: c[4],
-      status: (c[5]||"Aktif").trim(), // pastikan ambil status dari CSV
-      pt: c[12],
-      komisariat: c[13],
-      jabatan: c[14]||"",
-      posisi: c[15]||"",
-      foto: c[16]||"https://via.placeholder.com/100x120",
+      id: c[0]?.trim(),
+      nik: c[3]?.trim(),
+      nama: c[4]?.trim(),
+      status: c[5]?.trim() || "Aktif",
+      pt: c[12]?.trim(),
+      komisariat: c[13]?.trim(),
+      jabatan: c[14]?.trim() || "",
+      posisi: c[15]?.trim() || "",
+      foto: c[16]?.trim() || "https://via.placeholder.com/100x120",
       ttd: "https://raw.githubusercontent.com/prayogas221/KTAHMIMIMIKA/main/ttd.png"
     }
   });
@@ -335,7 +335,7 @@ async function toBase64(url){
 }
 
 async function generateQR(text){
-  return await QRCode.toDataURL(text,{width:40,height:40});
+  return await QRCode.toDataURL(text,{width:80,height:80});
 }
 
 function toHijri(date){
@@ -427,7 +427,7 @@ async function downloadPDF(){
   );
 
   html2pdf().set({
-    margin:5,
+    margin:6,
     filename:"KTA_HMI_MIMIKA.pdf",
     html2canvas:{scale:2,useCORS:true,allowTaint:true},
     jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
@@ -439,4 +439,3 @@ loadMembers();
 
 </body>
 </html>
-
