@@ -199,7 +199,7 @@ body{
 <body>
 
 <div id="login-form">
-  <h2 style="text-align:center;">Login Cabang/Komisariat</h2>
+  <h2 style="text-align:center;">Login Cabang</h2>
   <input type="text" id="username" placeholder="Username">
   <input type="password" id="password" placeholder="Password">
   <button onclick="login()">Login</button>
@@ -214,9 +214,6 @@ body{
 
 const users = {
   "cabang mimika": { password: "cabang123" }
-  "komisariat ekonomi": { password: "eko123" }
-  "komisariat insan cita": { password: "insan123" }
-  "komisariat lafran pane": { password: "lafran123" }
 };
 
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkxnLr5GK_w_WRktgY-SZZ2pjBHlDVSphEYLLSBLntg0IyQB3Z5178wjaES8-yMQV7ZcMTGym-VoZA/pub?gid=0&single=true&output=csv";
@@ -321,7 +318,7 @@ async function generateKTA(){
             <img src="${qr}">
           </div>
 
-          <div class="kta-valid">Berlaku Satu Tahun</div>
+          <div class="kta-valid">VALID SEUMUR HIDUP</div>
         </div>
       </div>
     `;
