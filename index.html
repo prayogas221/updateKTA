@@ -1,12 +1,13 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KTA HMI Mimika - Final</title>
+<title>KTA HMI Mimika - Elite Stable</title>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -144,12 +145,6 @@ body{
   z-index:2;
 }
 
-.kta-left{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
-
 .kta-left img{
   width:20mm;
   height:25mm;
@@ -158,19 +153,9 @@ body{
   border:1.5px solid #2d5016;
 }
 
-.ttd-img{
-  width:14mm;
-  margin-top:2px;
-  object-fit:contain;
-}
-
-/* RIGHT SIDE */
 .kta-right{
   flex:1;
   font-size:6.5px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
 }
 
 .kta-right h2{
@@ -188,44 +173,29 @@ body{
   font-weight:600;
 }
 
-/* QR + Kalender */
+/* QR */
 .kta-bottom{
   display:flex;
-  justify-content:flex-end;
+  justify-content:space-between;
   align-items:flex-end;
   margin-top:2px;
-  gap:2px;
 }
 
 .qr-section{
   display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  gap:2px;
-}
-
-.qr-section img{
-  width:16px;
-  height:16px;
+  align-items:center;
+  gap:3px;
 }
 
 .qr-gold-line{
   width:3px;
-  height:16px;
+  height:20px;
   background:linear-gradient(#d4af37,#f6e27a);
   border-radius:2px;
 }
 
-/* Dual Calendar */
-.dual-calendar{
-  text-align:right;
-  font-size:5.5px;
-  margin-top:2px;
-}
-
-.dual-calendar hr{
-  border:1px solid #2d5016;
-  margin:1px 0;
+.kta-bottom img{
+  height:18px;
 }
 
 /* GOLD */
@@ -237,6 +207,7 @@ body{
 /* PRINT 8 PER A4 */
 @media print{
   body{ background:white; }
+
   #kta-container{
     display:grid;
     grid-template-columns: repeat(2, 86mm);
@@ -244,6 +215,7 @@ body{
     gap:6mm;
     justify-content:center;
   }
+
   .kta-card{ box-shadow:none; }
 }
 </style>
@@ -266,6 +238,7 @@ body{
 </div>
 
 <script>
+
 const users = {
   "cabang mimika": { password: "cabang123", role:"all" },
   "komisariat ekonomi": { password: "eko123", role:"Komisariat Ekonomi" },
@@ -290,12 +263,10 @@ async function loadMembers(){
       id: c[0],
       nik: c[3],
       nama: c[4],
-      status: (c[5]||"Aktif").trim(), // pastikan ambil status dari CSV
       pt: c[12],
       komisariat: c[13],
-      jabatan: c[14]||"",
-      posisi: c[15]||"",
-      foto: c[16]||"https://via.placeholder.com/100x120",
+      jabatan: c[14] || "",
+      foto: c[16] || "https://via.placeholder.com/100x120",
       ttd: "https://raw.githubusercontent.com/prayogas221/KTAHMIMIMIKA/main/ttd.png"
     }
   });
@@ -304,7 +275,11 @@ async function loadMembers(){
 function populateDropdown(){
   const select = document.getElementById("namaFilter");
   select.innerHTML = "<option value='all'>Semua Anggota</option>";
-  const filtered = currentRole === "all" ? members : members.filter(m=>m.komisariat === currentRole);
+
+  const filtered = currentRole === "all" 
+    ? members 
+    : members.filter(m=>m.komisariat === currentRole);
+
   filtered.forEach(m=>{
     select.innerHTML += `<option value="${m.id}">${m.nama}</option>`;
   });
@@ -335,16 +310,7 @@ async function toBase64(url){
 }
 
 async function generateQR(text){
-  return await QRCode.toDataURL(text,{width:40,height:40});
-}
-
-function toHijri(date){
-  const day = date.getDate();
-  const month = date.getMonth()+1;
-  const year = date.getFullYear();
-  const hijriYear = year - 622 + Math.floor((month-3)/12);
-  const hijriMonth = ((month + 9)%12)||12;
-  return `${day} ${hijriMonth} ${hijriYear} H`;
+  return await QRCode.toDataURL(text,{width:120});
 }
 
 async function generateKTA(){
@@ -352,13 +318,16 @@ async function generateKTA(){
   container.innerHTML = "";
 
   const selectedId = document.getElementById("namaFilter").value;
+
   const filtered = selectedId === "all"
     ? (currentRole === "all" ? members : members.filter(m=>m.komisariat===currentRole))
     : members.filter(m=>m.id===selectedId);
 
   for(const m of filtered){
+
     let foto64 = await toBase64(m.foto);
     let ttd64 = await toBase64(m.ttd);
+
     const qr = await generateQR(m.id);
 
     const isGold = m.jabatan.toLowerCase().includes("ketua") ||
@@ -367,10 +336,6 @@ async function generateKTA(){
 
     const card = document.createElement("div");
     card.className = isGold ? "kta-card gold" : "kta-card";
-
-    const now = new Date();
-    const masehi = now.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}) + " M";
-    const hijri = toHijri(now);
 
     card.innerHTML = `
       <img src="${logo}" class="kta-watermark">
@@ -386,39 +351,33 @@ async function generateKTA(){
       <div class="kta-content">
         <div class="kta-left">
           <img src="${foto64}">
-          <img src="${ttd64}" class="ttd-img">
         </div>
-
         <div class="kta-right">
-          <div>
-            <div class="kta-number">ID: ${m.id}</div>
-            <h2>${m.nama}</h2>
-            <p>NIK: ${m.nik}</p>
-            <p>Status: ${m.status}</p>
-            <p>Perguruan Tinggi: ${m.pt}</p>
-            <p>Komisariat: ${m.komisariat}</p>
-            <p>Jabatan: ${m.jabatan}</p>
-            <p>Posisi: ${m.posisi}</p>
-          </div>
+          <div class="kta-number">${m.id}</div>
+          <h2>${m.nama}</h2>
+          <p>NIK: ${m.nik}</p>
+          <p>PT: ${m.pt}</p>
+          <p>Komisariat: ${m.komisariat}</p>
+          <p>Jabatan: ${m.jabatan}</p>
 
           <div class="kta-bottom">
+            <img src="${ttd64}">
             <div class="qr-section">
               <div class="qr-gold-line"></div>
               <img src="${qr}">
-              <div class="dual-calendar">
-                ${masehi}<hr>${hijri}
-              </div>
             </div>
           </div>
         </div>
       </div>
     `;
+
     container.appendChild(card);
   }
 }
 
 async function downloadPDF(){
   const element = document.getElementById("kta-container");
+
   await Promise.all(
     Array.from(element.querySelectorAll("img")).map(img=>{
       if(img.complete) return Promise.resolve();
@@ -435,7 +394,7 @@ async function downloadPDF(){
 }
 
 loadMembers();
-</script>
 
+</script>
 </body>
 </html>
