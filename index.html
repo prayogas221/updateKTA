@@ -54,7 +54,7 @@ body{
   justify-content:center;
 }
 
-/* CARD SIZE PVC */
+/* PVC SIZE */
 .kta-card{
   width:86mm;
   height:54mm;
@@ -65,7 +65,7 @@ body{
   box-shadow:0 12px 25px rgba(0,0,0,0.25);
 }
 
-/* PANEL KIRI */
+/* PANEL */
 .kta-card::before{
   content:'';
   position:absolute;
@@ -76,7 +76,6 @@ body{
   background:linear-gradient(180deg,#0f3d1c,#2d5016,#000);
 }
 
-/* PANEL KANAN */
 .kta-card::after{
   content:'';
   position:absolute;
@@ -97,7 +96,7 @@ body{
   transform:translate(-50%,-50%);
 }
 
-/* LOGO KANAN */
+/* LOGO */
 .kta-logo{
   position:absolute;
   top:6px;
@@ -165,10 +164,9 @@ body{
 .kta-number{
   font-size:7px;
   font-weight:600;
-  letter-spacing:1px;
 }
 
-/* QR SECTION */
+/* QR */
 .kta-bottom{
   display:flex;
   justify-content:space-between;
@@ -193,7 +191,7 @@ body{
   height:18px;
 }
 
-/* TANGGAL CETAK */
+/* TANGGAL */
 .print-date{
   position:absolute;
   bottom:4px;
@@ -208,7 +206,7 @@ body{
   margin:2px 0;
 }
 
-/* GOLD VERSION */
+/* GOLD */
 .gold{
   background:linear-gradient(135deg,#fff8dc,#f6e27a,#ffffff);
   border:1.5px solid #d4af37;
@@ -257,6 +255,7 @@ const logo = "https://upload.wikimedia.org/wikipedia/commons/6/67/Lambang_HMI_%2
 let members = [];
 let dataLoaded = false;
 
+/* LOAD CSV */
 async function loadMembers(){
   const res = await fetch(csvUrl);
   const text = await res.text();
@@ -268,11 +267,9 @@ async function loadMembers(){
       id: c[0],
       nik: c[3],
       nama: c[4],
-      status: c[10],
       pt: c[12],
       komisariat: c[13],
       jabatan: c[14] || "",
-      posisi: c[15] || "",
       foto: c[16] || "https://via.placeholder.com/100x120",
       ttd: "https://raw.githubusercontent.com/prayogas221/KTAHMIMIMIKA/main/ttd.png"
     }
@@ -281,39 +278,44 @@ async function loadMembers(){
   dataLoaded = true;
 }
 
+/* BASE64 CONVERTER */
+async function toBase64(url){
+  const response = await fetch(url);
+  const blob = await response.blob();
+  return new Promise(resolve=>{
+    const reader = new FileReader();
+    reader.onloadend = ()=> resolve(reader.result);
+    reader.readAsDataURL(blob);
+  });
+}
+
+/* LOGIN */
 function login(){
   const u = document.getElementById("username").value.trim().toLowerCase();
   const p = document.getElementById("password").value.trim();
-  const error = document.getElementById("login-error");
-
-  if(!dataLoaded){
-    alert("Data masih dimuat...");
-    return;
-  }
 
   if(users[u] && users[u].password === p){
     document.getElementById("login-form").classList.add("hidden");
     document.getElementById("kta-page").classList.remove("hidden");
-    error.classList.add("hidden");
     generateKTA();
   }else{
-    error.classList.remove("hidden");
+    document.getElementById("login-error").classList.remove("hidden");
   }
 }
 
+/* HIJRI */
 function getHijriDate(){
-  const today = new Date();
-  return new Intl.DateTimeFormat('id-TN-u-ca-islamic', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric'
-  }).format(today);
+  return new Intl.DateTimeFormat('id-TN-u-ca-islamic',{
+    day:'2-digit',month:'long',year:'numeric'
+  }).format(new Date());
 }
 
+/* QR */
 async function generateQR(text){
   return await QRCode.toDataURL(text,{width:120});
 }
 
+/* GENERATE */
 async function generateKTA(){
   const container = document.getElementById("kta-container");
   container.innerHTML = "";
@@ -322,6 +324,16 @@ async function generateKTA(){
   const hijri = getHijriDate();
 
   for(const m of members){
+
+    let foto64 = m.foto;
+    let ttd64 = m.ttd;
+
+    try{
+      foto64 = await toBase64(m.foto);
+      ttd64 = await toBase64(m.ttd);
+    }catch(e){
+      console.log("Gambar gagal load:", e);
+    }
 
     const verifyURL = window.location.origin + "/verifikasi.html?id=" + m.id;
     const qr = await generateQR(verifyURL);
@@ -345,7 +357,7 @@ async function generateKTA(){
 
       <div class="kta-content">
         <div class="kta-left">
-          <img src="${m.foto}">
+          <img src="${foto64}">
         </div>
         <div class="kta-right">
           <div class="kta-number">${m.id}</div>
@@ -356,7 +368,7 @@ async function generateKTA(){
           <p>Jabatan: ${m.jabatan}</p>
 
           <div class="kta-bottom">
-            <img src="${m.ttd}">
+            <img src="${ttd64}">
             <div class="qr-section">
               <div class="qr-gold-line"></div>
               <img src="${qr}">
@@ -376,12 +388,21 @@ async function generateKTA(){
   }
 }
 
+/* PDF */
 async function downloadPDF(){
   const element = document.getElementById("kta-container");
-  await html2pdf().set({
+
+  await Promise.all(
+    Array.from(element.querySelectorAll("img")).map(img=>{
+      if(img.complete) return Promise.resolve();
+      return new Promise(res=>img.onload=res);
+    })
+  );
+
+  html2pdf().set({
     margin:5,
     filename:"KTA_HMI_MIMIKA.pdf",
-    html2canvas:{scale:2},
+    html2canvas:{scale:2,useCORS:true,allowTaint:true},
     jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
   }).from(element).save();
 }
@@ -389,6 +410,5 @@ async function downloadPDF(){
 loadMembers();
 
 </script>
-
 </body>
 </html>
