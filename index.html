@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KTA HMI Mimika - Final System</title>
+<title>KTA HMI Mimika - Elite Stable</title>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -16,6 +15,7 @@ body{
   background:#f1f1f1;
   padding:1rem;
 }
+
 .hidden{display:none;}
 
 #login-form{
@@ -26,13 +26,15 @@ body{
   border-radius:12px;
   box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
-#login-form input{
+
+#login-form input, #login-form select{
   width:100%;
   padding:10px;
   margin-bottom:12px;
   border:1px solid #ccc;
   border-radius:8px;
 }
+
 #login-form button{
   width:100%;
   padding:10px;
@@ -51,7 +53,7 @@ body{
   justify-content:center;
 }
 
-/* PVC */
+/* PVC SIZE */
 .kta-card{
   width:86mm;
   height:54mm;
@@ -59,18 +61,73 @@ body{
   position:relative;
   overflow:hidden;
   background:white;
-  box-shadow:0 10px 20px rgba(0,0,0,0.25);
+  box-shadow:0 12px 25px rgba(0,0,0,0.25);
   border-top:3px solid #2d5016;
   border-bottom:3px solid #d4af37;
 }
 
-/* Header */
+/* PANEL */
+.kta-card::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:0;
+  width:10mm;
+  height:100%;
+  background:linear-gradient(180deg,#0f3d1c,#2d5016,#000);
+}
+
+.kta-card::after{
+  content:'';
+  position:absolute;
+  right:0;
+  top:0;
+  width:8mm;
+  height:100%;
+  background:linear-gradient(180deg,#000,#2d5016,#0f3d1c);
+}
+
+/* WATERMARK */
+.kta-watermark{
+  position:absolute;
+  width:40mm;
+  opacity:0.05;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
+
+/* LOGO */
+.kta-logo{
+  position:absolute;
+  top:6px;
+  right:10mm;
+  width:18px;
+  z-index:3;
+}
+
+/* HEADER */
 .kta-header{
   text-align:center;
   padding-top:4px;
+  position:relative;
+  z-index:2;
 }
-.bismillah{ font-size:8px; font-weight:600; }
-.kta-title{ font-size:9px; font-weight:700; }
+
+.bismillah{
+  font-size:9px;
+  font-weight:600;
+}
+
+.kta-title{
+  font-size:9px;
+  font-weight:700;
+}
+
+.kta-subtitle{
+  font-size:7px;
+}
+
 .kta-divider{
   height:1.5px;
   width:30mm;
@@ -78,16 +135,15 @@ body{
   margin:3px auto;
 }
 
-/* Content */
+/* CONTENT */
 .kta-content{
   display:flex;
   gap:6px;
-  padding:0 8px;
+  padding:0 10mm 0 12mm;
+  position:relative;
+  z-index:2;
 }
-.kta-left{
-  width:28%;
-  text-align:center;
-}
+
 .kta-left img{
   width:20mm;
   height:25mm;
@@ -95,57 +151,76 @@ body{
   border-radius:4px;
   border:1.5px solid #2d5016;
 }
-.ttd{
-  width:20mm;
-  height:8mm;
-  object-fit:contain;
-  margin-top:2px;
-}
 
 .kta-right{
-  width:72%;
+  flex:1;
   font-size:6.5px;
 }
+
 .kta-right h2{
   font-size:8px;
+  font-weight:700;
   margin:0;
 }
+
+.kta-right p{
+  margin:1px 0;
+}
+
 .kta-number{
   font-size:7px;
   font-weight:600;
 }
 
-/* Bottom Section */
+/* QR + TTD + Dual Kalender */
 .kta-bottom{
-  position:absolute;
-  bottom:5px;
-  left:8px;
-  right:8px;
   display:flex;
   justify-content:space-between;
   align-items:flex-end;
+  margin-top:2px;
 }
 
-/* Date */
-.date-print{
-  font-size:6px;
-  text-align:left;
+.ttd-img{
+  width:30%;
+  margin-top:2px;
 }
-.date-line{
-  height:2px;
-  width:30px;
-  background:linear-gradient(to right,#2d5016,#d4af37);
+
+.qr-section{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:2px;
+  font-size:5px;
+}
+
+.qr-gold-line{
+  width:3px;
+  height:20px;
+  background:linear-gradient(#d4af37,#f6e27a);
+  border-radius:2px;
+}
+
+.dual-calendar{
+  text-align:right;
+  font-size:5.5px;
+  margin-top:2px;
+}
+
+.dual-calendar hr{
+  border:1px solid #2d5016;
   margin:2px 0;
 }
 
-/* QR */
-.qr-box img{
-  height:40px;
+/* GOLD */
+.gold{
+  background:linear-gradient(135deg,#fff8dc,#f6e27a,#ffffff);
+  border:1.5px solid #d4af37;
 }
 
-/* PRINT */
+/* PRINT 8 PER A4 */
 @media print{
   body{ background:white; }
+
   #kta-container{
     display:grid;
     grid-template-columns: repeat(2, 86mm);
@@ -153,22 +228,21 @@ body{
     gap:6mm;
     justify-content:center;
   }
+
   .kta-card{ box-shadow:none; }
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login-form">
   <h2 style="text-align:center;">Login Sistem KTA</h2>
   <input type="text" id="username" placeholder="Username">
   <input type="password" id="password" placeholder="Password">
-  <button onclick="login()">Login</button>
+  <button id="btnLogin">Login</button>
   <p id="login-error" class="hidden" style="color:red;text-align:center;">Login gagal</p>
 </div>
 
-<!-- PAGE -->
 <div id="kta-page" class="hidden">
   <select id="namaFilter"></select>
   <button onclick="generateKTA()">Generate</button>
@@ -177,8 +251,6 @@ body{
 </div>
 
 <script>
-
-/* LOGIN SYSTEM (TIDAK DIUBAH) */
 const users = {
   "cabang mimika": { password: "cabang123", role:"all" },
   "komisariat ekonomi": { password: "eko123", role:"Komisariat Ekonomi" },
@@ -186,9 +258,43 @@ const users = {
   "komisariat lafran pane": { password: "lafran123", role:"Komisariat Lafran Pane" }
 };
 
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkxnLr5GK_w_WRktgY-SZZ2pjBHlDVSphEYLLSBLntg0IyQB3Z5178wjaES8-yMQV7ZcMTGym-VoZA/pub?gid=0&single=true&output=csv";
+
+const logo = "https://upload.wikimedia.org/wikipedia/commons/6/67/Lambang_HMI_%28Original%29.png";
+
+let members = [];
 let currentRole = "all";
 
-function login(){
+async function loadMembers(){
+  const res = await fetch(csvUrl);
+  const text = await res.text();
+  const rows = text.split("\n").slice(1);
+
+  members = rows.map(r=>{
+    const c = r.split(",");
+    return {
+      id: c[0],
+      nik: c[3],
+      nama: c[4],
+      pt: c[12],
+      komisariat: c[13],
+      jabatan: c[14] || "",
+      foto: c[16] || "https://via.placeholder.com/100x120",
+      ttd: "https://raw.githubusercontent.com/prayogas221/KTAHMIMIMIKA/main/ttd.png"
+    }
+  });
+}
+
+function populateDropdown(){
+  const select = document.getElementById("namaFilter");
+  select.innerHTML = "<option value='all'>Semua Anggota</option>";
+  const filtered = currentRole === "all" ? members : members.filter(m=>m.komisariat === currentRole);
+  filtered.forEach(m=>{
+    select.innerHTML += `<option value="${m.id}">${m.nama}</option>`;
+  });
+}
+
+document.getElementById("btnLogin").addEventListener("click", function(){
   const u = document.getElementById("username").value.trim().toLowerCase();
   const p = document.getElementById("password").value.trim();
 
@@ -200,107 +306,94 @@ function login(){
   }else{
     document.getElementById("login-error").classList.remove("hidden");
   }
-}
+});
 
-/* GOOGLE SHEET CSV */
-const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRkxnLr5GK_w_WRktgY-SZZ2pjBHlDVSphEYLLSBLntg0IyQB3Z5178wjaES8-yMQV7ZcMTGym-VoZA/pub?gid=0&single=true&output=csv";
-let members = [];
-
-async function loadMembers(){
-  const res = await fetch(csvUrl);
-  const text = await res.text();
-  const rows = text.split("\n").slice(1);
-
-  members = rows.map(r=>{
-    const c = r.split(",");
-    return {
-      id: c[0],
-      nama: c[4],
-      komisariat: c[13],
-      foto: c[16],
-      ttd: "https://raw.githubusercontent.com/prayogas221/KTAHMIMIMIKA/main/ttd.png"
-    }
-  });
-}
-loadMembers();
-
-function populateDropdown(){
-  const select = document.getElementById("namaFilter");
-  select.innerHTML = "<option value='all'>Semua Anggota</option>";
-
-  const filtered = currentRole === "all" 
-    ? members 
-    : members.filter(m=>m.komisariat === currentRole);
-
-  filtered.forEach(m=>{
-    select.innerHTML += `<option value="${m.id}">${m.nama}</option>`;
+async function toBase64(url){
+  const response = await fetch(url);
+  const blob = await response.blob();
+  return new Promise(resolve=>{
+    const reader = new FileReader();
+    reader.onloadend = ()=> resolve(reader.result);
+    reader.readAsDataURL(blob);
   });
 }
 
-/* ENKRIPSI SERIAL */
-function encrypt(text){
-  return btoa("HMI-"+text);
+async function generateQR(text){
+  const baseUrl = "https://your-verifikasi-kta-online.com/?id=";
+  const url = baseUrl + btoa(text); // terenkripsi
+  return await QRCode.toDataURL(url,{width:120});
 }
 
-/* TANGGAL */
-function tanggalMasehi(){
-  const bulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];
-  const d = new Date();
-  return `${String(d.getDate()).padStart(2,'0')} ${bulan[d.getMonth()]} ${d.getFullYear()} M`;
+// Fungsi sederhana konversi tanggal Masehi ke Hijriah (perkiraan)
+function toHijri(date){
+  const day = date.getDate();
+  const month = date.getMonth()+1;
+  const year = date.getFullYear();
+  const hijriYear = year - 622 + Math.floor((month-3)/12);
+  const hijriMonth = ((month + 9)%12)||12;
+  return `${day} ${hijriMonth} ${hijriYear} H`;
 }
 
-function tanggalHijriah(){
-  return new Intl.DateTimeFormat('id-TN-u-ca-islamic',{
-    day:'numeric',month:'long',year:'numeric'
-  }).format(new Date()) + " H";
-}
-
-/* GENERATE */
 async function generateKTA(){
   const container = document.getElementById("kta-container");
   container.innerHTML = "";
 
-  const selected = document.getElementById("namaFilter").value;
-  const filtered = selected==="all"
-    ? (currentRole==="all"?members:members.filter(m=>m.komisariat===currentRole))
-    : members.filter(m=>m.id===selected);
+  const selectedId = document.getElementById("namaFilter").value;
+  const filtered = selectedId === "all"
+    ? (currentRole === "all" ? members : members.filter(m=>m.komisariat===currentRole))
+    : members.filter(m=>m.id===selectedId);
 
   for(const m of filtered){
+    let foto64 = await toBase64(m.foto);
+    let ttd64 = await toBase64(m.ttd);
+    const qr = await generateQR(m.id);
 
-    const encrypted = encrypt(m.id);
-    const qrLink = "verifikasi.html?id="+encrypted;
-    const qrImg = await QRCode.toDataURL(qrLink,{width:120});
+    const isGold = m.jabatan.toLowerCase().includes("ketua") ||
+                   m.jabatan.toLowerCase().includes("sekretaris") ||
+                   m.jabatan.toLowerCase().includes("bendahara");
 
     const card = document.createElement("div");
-    card.className="kta-card";
+    card.className = isGold ? "kta-card gold" : "kta-card";
 
-    card.innerHTML=`
+    const now = new Date();
+    const masehi = now.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}) + " M";
+    const hijri = toHijri(now);
+
+    card.innerHTML = `
+      <img src="${logo}" class="kta-watermark">
+      <img src="${logo}" class="kta-logo">
+
       <div class="kta-header">
         <div class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
         <div class="kta-title">KARTU TANDA ANGGOTA</div>
+        <div class="kta-subtitle">HMI CABANG PERSIAPAN MIMIKA</div>
         <div class="kta-divider"></div>
       </div>
 
       <div class="kta-content">
         <div class="kta-left">
-          <img src="${m.foto}">
-          <img src="${m.ttd}" class="ttd">
+          <img src="${foto64}">
+          <img src="${ttd64}" class="ttd-img">
         </div>
         <div class="kta-right">
           <div class="kta-number">${m.id}</div>
           <h2>${m.nama}</h2>
+          <p>NIK: ${m.nik}</p>
+          <p>PT: ${m.pt}</p>
           <p>Komisariat: ${m.komisariat}</p>
-        </div>
-      </div>
+          <p>Jabatan: ${m.jabatan}</p>
 
-      <div class="kta-bottom">
-        <div class="date-print">
-          ${tanggalMasehi()}
-          <div class="date-line"></div>
-          ${tanggalHijriah()}
-        </div>
-        <div class="qr-box">
-          <img src="${qrImg}">
+          <div class="kta-bottom">
+            <div class="qr-section">
+              <div class="qr-gold-line"></div>
+              <img src="${qr}">
+              <div class="dual-calendar">
+                ${masehi}
+                <hr>
+                ${hijri}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -308,13 +401,25 @@ async function generateKTA(){
   }
 }
 
-/* PDF */
 async function downloadPDF(){
   const element = document.getElementById("kta-container");
-  html2pdf().from(element).save("KTA_HMI_MIMIKA.pdf");
+  await Promise.all(
+    Array.from(element.querySelectorAll("img")).map(img=>{
+      if(img.complete) return Promise.resolve();
+      return new Promise(res=>img.onload=res);
+    })
+  );
+
+  html2pdf().set({
+    margin:5,
+    filename:"KTA_HMI_MIMIKA.pdf",
+    html2canvas:{scale:2,useCORS:true,allowTaint:true},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+  }).from(element).save();
 }
 
+loadMembers();
 </script>
+
 </body>
 </html>
-
